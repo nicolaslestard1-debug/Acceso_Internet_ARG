@@ -1,0 +1,252 @@
+import pandas as pd
+from google.colab import files
+print("Por favor, sube el archivo 'accesos_internet.xlsx':")
+uploaded = files.upload()
+file_name = next(iter(uploaded))
+df_internet = pd.read_excel(file_name)
+print(f'\nArchivo "{file_name}" subido y cargado correctamente en df_internet.')
+print("\nInformación general del DataFrame 'df_internet':")
+print(df_internet.info())
+print(df_internet.columns)
+print(df_internet.head())
+mapeo_regiones = {
+    'Buenos Aires': 'Centro',
+    'CABA': 'Centro', # O 'Ciudad Autónoma de Buenos Aires'
+    'Catamarca': 'NOA',
+    'Chaco': 'NEA',
+    'Chubut': 'Sur',
+    'Córdoba': 'Centro',
+    'Corrientes': 'NEA',
+    'Entre Ríos': 'Centro',
+    'Formosa': 'NEA',
+    'Jujuy': 'NOA',
+    'La Pampa': 'Sur',
+    'La Rioja': 'Cuyo',
+    'Mendoza': 'Cuyo',
+    'Misiones': 'NEA',
+    'Neuquén': 'Sur',
+    'Río Negro': 'Sur',
+    'Salta': 'NOA',
+    'San Juan': 'Cuyo',
+    'San Luis': 'Cuyo',
+    'Santa Cruz': 'Sur',
+    'Santa Fe': 'Centro',
+    'Santiago del Estero': 'NOA',
+    'Tierra del Fuego': 'Sur',
+    'Tucumán': 'NOA'
+}
+data_internet = [
+    # Año 2019
+    {'Año': 2019, 'Provincia': 'Buenos Aires', 'Accesos por cada 100 hogares': 77.29, 'Total_Accesos': 5104273, 'Banda_Ancha_Fija': 5092008, 'Dial_Up': 12265}, # Estos son los que leí del 2019 de Buenos Aires
+    {'Año': 2019, 'Provincia': 'CABA', 'Accesos por cada 100 hogares': 105.80, 'Total_Accesos': 1493035, 'Banda_Ancha_Fija': 1489674, 'Dial_Up': 3361}, # CABA 2019
+    {'Año': 2019, 'Provincia': 'Catamarca', 'Accesos por cada 100 hogares': 47.96, 'Total_Accesos': 75249, 'Banda_Ancha_Fija': 74812, 'Dial_Up': 437}, # Catamarca 2019
+    # CONTINÚA CON EL RESTO DE PROVINCIAS PARA 2019...
+    {'Año': 2019, 'Provincia': 'Chaco', 'Accesos por cada 100 hogares': 34.61, 'Total_Accesos': 126955, 'Banda_Ancha_Fija': 126425, 'Dial_Up': 530}, # Chaco 2019
+    # ... y así para todas las 24 provincias por cada año.
+
+    # Año 2020
+    {'Año': 2020, 'Provincia': 'Buenos Aires', 'Accesos por cada 100 hogares': 83.18, 'Total_Accesos': 5580665, 'Banda_Ancha_Fija': 5573428, 'Dial_Up': 7237}, # Buenos Aires 2020
+    {'Año': 2020, 'Provincia': 'CABA', 'Accesos por cada 100 hogares': 113.10, 'Total_Accesos': 1610429, 'Banda_Ancha_Fija': 1607590, 'Dial_Up': 2839}, # CABA 2020
+    # CONTINÚA CON EL RESTO DE PROVINCIAS PARA 2020...
+
+    # Año 2021
+    {'Año': 2021, 'Provincia': 'Buenos Aires', 'Accesos por cada 100 hogares': 86.83, 'Total_Accesos': 5894179, 'Banda_Ancha_Fija': 5889758, 'Dial_Up': 4421}, # Buenos Aires 2021
+    {'Año': 2021, 'Provincia': 'CABA', 'Accesos por cada 100 hogares': 122.99, 'Total_Accesos': 1762143, 'Banda_Ancha_Fija': 1759600, 'Dial_Up': 2543}, # CABA 2021
+    # CONTINÚA CON EL RESTO DE PROVINCIAS PARA 2021...
+
+    # Año 2022
+    {'Año': 2022, 'Provincia': 'Buenos Aires', 'Accesos por cada 100 hogares': 90.54, 'Total_Accesos': 6177114, 'Banda_Ancha_Fija': 6173003, 'Dial_Up': 4111}, # Buenos Aires 2022
+    {'Año': 2022, 'Provincia': 'CABA', 'Accesos por cada 100 hogares': 130.65, 'Total_Accesos': 1876540, 'Banda_Ancha_Fija': 1874284, 'Dial_Up': 2256}, # CABA 2022
+    # CONTINÚA CON EL RESTO DE PROVINCIAS PARA 2022...
+]
+df_internet = pd.DataFrame(data_internet)
+
+print("DataFrame df_internet creado (solo una parte, necesitas completarlo):")
+print(df_internet.head())
+print(df_internet.tail())
+print("\nInformación de df_internet (verificar tipos de datos):")
+print(df_internet.info())
+df_internet['Region'] = df_internet['Provincia'].map(mapeo_regiones)
+print("\nProvincias sin mapeo a región (si hay):")
+print(df_internet[df_internet['Region'].isnull()]['Provincia'].unique())
+df_internet_por_region = df_internet.groupby(['Año', 'Region'])['Accesos por cada 100 hogares'].mean().reset_index()
+
+print("\nDataFrame de Accesos a Internet agrupado por Región y Año (promedio):")
+print(df_internet_por_region)
+df_internet_por_region = df_internet.groupby(['Año', 'Region'])['Accesos por cada 100 hogares'].mean().reset_index()
+
+print("\nDataFrame de Accesos a Internet agrupado por Región y Año (promedio 'Accesos por cada 100 hogares'):")
+print(df_internet_por_region)
+df_internet_por_region = df_internet.groupby(['Año', 'Region'])['Accesos por cada 100 hogares'].mean().reset_index()
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# --- Carga y preparación de df_internet
+
+mapeo_regiones_nuevo = {
+    'Buenos Aires': 'Gran Buenos Aires',
+    'CABA': 'Gran Buenos Aires',
+    'Catamarca': 'Noroeste',
+    'Chaco': 'Noreste',
+    'Chubut': 'Patagonia',
+    'Córdoba': 'Pampeana',
+    'Corrientes': 'Noreste',
+    'Entre Ríos': 'Pampeana',
+    'Formosa': 'Noreste',
+    'Jujuy': 'Noroeste',
+    'La Pampa': 'Pampeana',
+    'La Rioja': 'Cuyo',
+    'Mendoza': 'Cuyo',
+    'Misiones': 'Noreste',
+    'Neuquén': 'Patagonia',
+    'Río Negro': 'Patagonia',
+    'Salta': 'Noroeste',
+    'San Juan': 'Cuyo',
+    'San Luis': 'Cuyo',
+    'Santa Cruz': 'Patagonia',
+    'Santa Fe': 'Pampeana',
+    'Santiago del Estero': 'Noroeste',
+    'Tierra del Fuego': 'Patagonia',
+    'Tucumán': 'Noroeste'
+}
+
+
+# Solo incluyo las columnas necesarias para df_internet_por_region para eficiencia
+data_internet = [
+    # --- Año 2019 ---
+    {'Año': 2019, 'Provincia': 'Buenos Aires', 'Accesos por cada 100 hogares': 77.29},
+    {'Año': 2019, 'Provincia': 'CABA', 'Accesos por cada 100 hogares': 105.80},
+    {'Año': 2019, 'Provincia': 'Catamarca', 'Accesos por cada 100 hogares': 47.96},
+    {'Año': 2019, 'Provincia': 'Chaco', 'Accesos por cada 100 hogares': 34.61},
+    {'Año': 2019, 'Provincia': 'Chubut', 'Accesos por cada 100 hogares': 61.64},
+    {'Año': 2019, 'Provincia': 'Córdoba', 'Accesos por cada 100 hogares': 77.06},
+    {'Año': 2019, 'Provincia': 'Corrientes', 'Accesos por cada 100 hogares': 40.59},
+    {'Año': 2019, 'Provincia': 'Entre Ríos', 'Accesos por cada 100 hogares': 59.85},
+    {'Año': 2019, 'Provincia': 'Formosa', 'Accesos por cada 100 hogares': 32.72},
+    {'Año': 2019, 'Provincia': 'Jujuy', 'Accesos por cada 100 hogares': 39.46},
+    {'Año': 2019, 'Provincia': 'La Pampa', 'Accesos por cada 100 hogares': 72.82},
+    {'Año': 2019, 'Provincia': 'La Rioja', 'Accesos por cada 100 hogares': 49.65},
+    {'Año': 2019, 'Provincia': 'Mendoza', 'Accesos por cada 100 hogares': 61.42},
+    {'Año': 2019, 'Provincia': 'Misiones', 'Accesos por cada 100 hogares': 45.41},
+    {'Año': 2019, 'Provincia': 'Neuquén', 'Accesos por cada 100 hogares': 83.19},
+    {'Año': 2019, 'Provincia': 'Río Negro', 'Accesos por cada 100 hogares': 60.10},
+    {'Año': 2019, 'Provincia': 'Salta', 'Accesos por cada 100 hogares': 40.50},
+    {'Año': 2019, 'Provincia': 'San Juan', 'Accesos por cada 100 hogares': 53.64},
+    {'Año': 2019, 'Provincia': 'San Luis', 'Accesos por cada 100 hogares': 64.93},
+    {'Año': 2019, 'Provincia': 'Santa Cruz', 'Accesos por cada 100 hogares': 77.01},
+    {'Año': 2019, 'Provincia': 'Santa Fe', 'Accesos por cada 100 hogares': 70.83},
+    {'Año': 2019, 'Provincia': 'Santiago del Estero', 'Accesos por cada 100 hogares': 34.20},
+    {'Año': 2019, 'Provincia': 'Tierra del Fuego', 'Accesos por cada 100 hogares': 83.18},
+    {'Año': 2019, 'Provincia': 'Tucumán', 'Accesos por cada 100 hogares': 51.98},
+
+    # --- Año 2020 ---
+    {'Año': 2020, 'Provincia': 'Buenos Aires', 'Accesos por cada 100 hogares': 83.18},
+    {'Año': 2020, 'Provincia': 'CABA', 'Accesos por cada 100 hogares': 113.10},
+    {'Año': 2020, 'Provincia': 'Catamarca', 'Accesos por cada 100 hogares': 50.80},
+    {'Año': 2020, 'Provincia': 'Chaco', 'Accesos por cada 100 hogares': 37.15},
+    {'Año': 2020, 'Provincia': 'Chubut', 'Accesos por cada 100 hogares': 66.86},
+    {'Año': 2020, 'Provincia': 'Córdoba', 'Accesos por cada 100 hogares': 83.05},
+    {'Año': 2020, 'Provincia': 'Corrientes', 'Accesos por cada 100 hogares': 43.86},
+    {'Año': 2020, 'Provincia': 'Entre Ríos', 'Accesos por cada 100 hogares': 65.59},
+    {'Año': 2020, 'Provincia': 'Formosa', 'Accesos por cada 100 hogares': 36.32},
+    {'Año': 2020, 'Provincia': 'Jujuy', 'Accesos por cada 100 hogares': 42.49},
+    {'Año': 2020, 'Provincia': 'La Pampa', 'Accesos por cada 100 hogares': 78.44},
+    {'Año': 2020, 'Provincia': 'La Rioja', 'Accesos por cada 100 hogares': 52.89},
+    {'Año': 2020, 'Provincia': 'Mendoza', 'Accesos por cada 100 hogares': 66.86},
+    {'Año': 2020, 'Provincia': 'Misiones', 'Accesos por cada 100 hogares': 48.77},
+    {'Año': 2020, 'Provincia': 'Neuquén', 'Accesos por cada 100 hogares': 88.08},
+    {'Año': 2020, 'Provincia': 'Río Negro', 'Accesos por cada 100 hogares': 64.67},
+    {'Año': 2020, 'Provincia': 'Salta', 'Accesos por cada 100 hogares': 43.89},
+    {'Año': 2020, 'Provincia': 'San Juan', 'Accesos por cada 100 hogares': 57.88},
+    {'Año': 2020, 'Provincia': 'San Luis', 'Accesos por cada 100 hogares': 68.61},
+    {'Año': 2020, 'Provincia': 'Santa Cruz', 'Accesos por cada 100 hogares': 80.99},
+    {'Año': 2020, 'Provincia': 'Santa Fe', 'Accesos por cada 100 hogares': 76.54},
+    {'Año': 2020, 'Provincia': 'Santiago del Estero', 'Accesos por cada 100 hogares': 37.07},
+    {'Año': 2020, 'Provincia': 'Tierra del Fuego', 'Accesos por cada 100 hogares': 86.84},
+    {'Año': 2020, 'Provincia': 'Tucumán', 'Accesos por cada 100 hogares': 55.61},
+
+    # --- Año 2021 ---
+    {'Año': 2021, 'Provincia': 'Buenos Aires', 'Accesos por cada 100 hogares': 86.83},
+    {'Año': 2021, 'Provincia': 'CABA', 'Accesos por cada 100 hogares': 122.99},
+    {'Año': 2021, 'Provincia': 'Catamarca', 'Accesos por cada 100 hogares': 54.06},
+    {'Año': 2021, 'Provincia': 'Chaco', 'Accesos por cada 100 hogares': 39.73},
+    {'Año': 2021, 'Provincia': 'Chubut', 'Accesos por cada 100 hogares': 70.83},
+    {'Año': 2021, 'Provincia': 'Córdoba', 'Accesos por cada 100 hogares': 87.26},
+    {'Año': 2021, 'Provincia': 'Corrientes', 'Accesos por cada 100 hogares': 46.85},
+    {'Año': 2021, 'Provincia': 'Entre Ríos', 'Accesos por cada 100 hogares': 69.19},
+    {'Año': 2021, 'Provincia': 'Formosa', 'Accesos por cada 100 hogares': 38.64},
+    {'Año': 2021, 'Provincia': 'Jujuy', 'Accesos por cada 100 hogares': 45.19},
+    {'Año': 2021, 'Provincia': 'La Pampa', 'Accesos por cada 100 hogares': 82.35},
+    {'Año': 2021, 'Provincia': 'La Rioja', 'Accesos por cada 100 hogares': 55.77},
+    {'Año': 2021, 'Provincia': 'Mendoza', 'Accesos por cada 100 hogares': 70.36},
+    {'Año': 2021, 'Provincia': 'Misiones', 'Accesos por cada 100 hogares': 51.52},
+    {'Año': 2021, 'Provincia': 'Neuquén', 'Accesos por cada 100 hogares': 92.42},
+    {'Año': 2021, 'Provincia': 'Río Negro', 'Accesos por cada 100 hogares': 67.92},
+    {'Año': 2021, 'Provincia': 'Salta', 'Accesos por cada 100 hogares': 46.85},
+    {'Año': 2021, 'Provincia': 'San Juan', 'Accesos por cada 100 hogares': 60.97},
+    {'Año': 2021, 'Provincia': 'San Luis', 'Accesos por cada 100 hogares': 71.95},
+    {'Año': 2021, 'Provincia': 'Santa Cruz', 'Accesos por cada 100 hogares': 84.88},
+    {'Año': 2021, 'Provincia': 'Santa Fe', 'Accesos por cada 100 hogares': 80.44},
+    {'Año': 2021, 'Provincia': 'Santiago del Estero', 'Accesos por cada 100 hogares': 39.69},
+    {'Año': 2021, 'Provincia': 'Tierra del Fuego', 'Accesos por cada 100 hogares': 90.72},
+    {'Año': 2021, 'Provincia': 'Tucumán', 'Accesos por cada 100 hogares': 58.74},
+
+    # --- Año 2022 ---
+    {'Año': 2022, 'Provincia': 'Buenos Aires', 'Accesos por cada 100 hogares': 90.54},
+    {'Año': 2022, 'Provincia': 'CABA', 'Accesos por cada 100 hogares': 130.65},
+    {'Año': 2022, 'Provincia': 'Catamarca', 'Accesos por cada 100 hogares': 57.06},
+    {'Año': 2022, 'Provincia': 'Chaco', 'Accesos por cada 100 hogares': 42.15},
+    {'Año': 2022, 'Provincia': 'Chubut', 'Accesos por cada 100 hogares': 74.45},
+    {'Año': 2022, 'Provincia': 'Córdoba', 'Accesos por cada 100 hogares': 91.24},
+    {'Año': 2022, 'Provincia': 'Corrientes', 'Accesos por cada 100 hogares': 49.33},
+    {'Año': 2022, 'Provincia': 'Entre Ríos', 'Accesos por cada 100 hogares': 72.82},
+    {'Año': 2022, 'Provincia': 'Formosa', 'Accesos por cada 100 hogares': 40.85},
+    {'Año': 2022, 'Provincia': 'Jujuy', 'Accesos por cada 100 hogares': 47.78},
+    {'Año': 2022, 'Provincia': 'La Pampa', 'Accesos por cada 100 hogares': 86.44},
+    {'Año': 2022, 'Provincia': 'La Rioja', 'Accesos por cada 100 hogares': 58.78},
+    {'Año': 2022, 'Provincia': 'Mendoza', 'Accesos por cada 100 hogares': 74.14},
+    {'Año': 2022, 'Provincia': 'Misiones', 'Accesos por cada 100 hogares': 54.40},
+    {'Año': 2022, 'Provincia': 'Neuquén', 'Accesos por cada 100 hogares': 96.65},
+    {'Año': 2022, 'Provincia': 'Río Negro', 'Accesos por cada 100 hogares': 71.53},
+    {'Año': 2022, 'Provincia': 'Salta', 'Accesos por cada 100 hogares': 49.33},
+    {'Año': 2022, 'Provincia': 'San Juan', 'Accesos por cada 100 hogares': 64.12},
+    {'Año': 2022, 'Provincia': 'San Luis', 'Accesos por cada 100 hogares': 75.76},
+    {'Año': 2022, 'Provincia': 'Santa Cruz', 'Accesos por cada 100 hogares': 89.20},
+    {'Año': 2022, 'Provincia': 'Santa Fe', 'Accesos por cada 100 hogares': 84.66},
+    {'Año': 2022, 'Provincia': 'Santiago del Estero', 'Accesos por cada 100 hogares': 42.14},
+    {'Año': 2022, 'Provincia': 'Tierra del Fuego', 'Accesos por cada 100 hogares': 95.14},
+    {'Año': 2022, 'Provincia': 'Tucumán', 'Accesos por cada 100 hogares': 61.98}
+]
+
+df_internet = pd.DataFrame(data_internet)
+# Se aplica el nuevo mapeo para crear la columna 'Region'
+df_internet['Region'] = df_internet['Provincia'].map(mapeo_regiones_nuevo)
+
+# Agrupar los datos de acceso a internet por 'Region' y 'Año' (promedio)
+df_internet_por_region = df_internet.groupby(['Año', 'Region'])['Accesos por cada 100 hogares'].mean().reset_index()
+
+# --- Código para graficar accesos a internet por región para cada año ---
+
+# Obtener los años únicos en el DataFrame
+years = sorted(df_internet_por_region['Año'].unique())
+
+# Crear un gráfico para cada año
+for year in years:
+    plt.figure(figsize=(10, 6)) # Tamaño de la figura para cada gráfico
+    df_year = df_internet_por_region[df_internet_por_region['Año'] == year]
+
+    # Ordenar las regiones para que coincidan con la imagen de referencia
+    order = ['Cuyo', 'Gran Buenos Aires', 'Noreste', 'Noroeste', 'Pampeana', 'Patagonia']
+    sns.barplot(data=df_year, x='Region', y='Accesos por cada 100 hogares', palette='viridis', order=order)
+
+    plt.title(f'Promedio de Accesos a Internet por cada 100 hogares por Región en {year}', fontsize=16)
+    plt.xlabel('Región', fontsize=12)
+    plt.ylabel('Accesos a Internet por cada 100 hogares (Promedio)', fontsize=12)
+    plt.grid(axis='y', linestyle='--', alpha=0.7) # Solo grid en el eje Y
+    plt.ylim(0, 140) # Establecer un límite fijo en el eje Y para una mejor comparación entre años
+    plt.xticks(rotation=45, ha='right') # Rotar las etiquetas del eje X para que no se superpongan
+    plt.tight_layout() # Ajustar el diseño para que no se superpongan los elementos
+    plt.show()
+
